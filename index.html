@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StopWatch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen">
+    <h1 class="text-blue-400 text-center text-5xl font-extrabold mb-12 mt-5 tracking-widest">StopWatch</h1>
+    <div  class="flex flex-col justify-center items-center">
+
+        <div class="bg-gray-800 shadow-lg rounded-full w-52 h-52 text-center flex flex-row justify-center
+         items-center mb-10 border-4 border-blue-500">
+            <button id="h" class="m-1 font-bold text-3xl text-blue-300">00</button>::
+            <button id="m" class="m-1 font-bold text-3xl text-blue-300">00</button>::
+            <button id="s" class="m-1 font-bold text-3xl text-blue-300">00</button>
+            <!-- <button id="ms" class="m-1 font-semibold">00</button> -->
+        </div>
+        <div class="flex space-x-4">
+            <button id="Flag" class="text-xl font-semibold bg-yellow-500 hover:bg-yellow-600 transition-all rounded-lg px-6 py-2 hidden"
+                onclick="Flag()">Flag
+            </button>
+            <button id="Start" class="text-xl font-semibold bg-green-500 hover:bg-green-600 transition-all rounded-lg px-6 py-2"
+                onclick="startTimer()">Start
+            </button>
+            <button id="Reset" class="text-xl font-semibold bg-red-500 hover:bg-red-600 transition-all rounded-lg px-6 py-2 hidden"
+                onclick="Restart()">Resest
+            </button>
+        </div>
+        
+        <div  id="show" class="w-full max-w-lg bg-gray-800 p-4 rounded-lg mt-6 hidden shadow-md">
+            <div id="dekh"  class="flex text-gray-300 font-bold justify-between pb-2 border-b border-gray-600">
+                <span class="w-1/3 text-center">Lap</span>
+                <span class="w-1/3 text-center">Lap time</span>
+                <span class="w-1/3 text-center">Total</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let h = document.getElementById("h").value;
+        let m = document.getElementById("m").value;
+        let s = document.getElementById("s").value;
+        // let ms = document.getElementById("ms").value;
+        let timer;
+        function startTimer() {
+            
+            document.getElementById("Flag").classList.remove("hidden")
+            document.getElementById("Reset").classList.remove("hidden")
+            
+           
+            timer = setInterval(() => {
+                s++;
+                if (s >= 60) {
+                    s = 0;
+                    m++;
+                }
+                if (m >= 60) {
+                    m = 0;
+                    h++;
+                }
+
+                document.getElementById("h").innerHTML = h.toString().padStart(2, '0')
+                document.getElementById("m").innerHTML = m.toString().padStart(2, '0')
+                document.getElementById("s").innerHTML = s.toString().padStart(2, '0')
+                
+            }, 1000)
+        }
+        function Restart(){
+            clearInterval(timer)
+            window.location.reload()
+        }
+        
+        let counter = 1;
+        let prevh=0,prevm=0,prevs=0;
+        function Flag(){
+            prevh=h-prevh;
+            prevm=m-prevm;
+            prevs=s-prevs;
+            
+            if(prevs<0){
+                prevs+=60;
+                prevm--;
+            }
+            if(prevm<0){
+                prevm+=60;
+                prevh--;
+            }
+
+            let list_ele = document.createElement('span')
+            let lap_list = document.createElement('span')
+            let flag = document.createElement('span')
+            
+            list_ele.className="w-1/3 text-center";
+            lap_list.className="w-1/3 text-center";
+            flag.className="w-1/3 text-center";
+            let lapTime = prevh.toString().padStart(2,'0')+":"+prevm.toString().padStart(2, '0')+":"+prevs.toString().padStart(2, '0')
+            let totalTime = h.toString().padStart(2, '0')+":"+m.toString().padStart(2, '0')+":"+s.toString().padStart(2, '0')
+
+            
+            let line = document.createElement('div')
+            line.className="flex text-gray-400 justify-between pt-2 mt-2 border-t border-gray-300"
+            if(counter === 1){
+              document.getElementById("show").classList.remove("hidden")
+            }
+            flag.innerHTML=counter.toString().padStart(2,'0');
+            list_ele.innerHTML=totalTime
+            lap_list.innerHTML=lapTime;
+            line.append(flag)
+            line.append(lap_list)
+            line.append(list_ele)
+           
+             
+            document.getElementById("dekh").insertAdjacentElement("afterend",line)
+            
+            prevh=h;
+            prevm=m;
+            prevs=s;
+            counter+=1;
+        }
+    </script>
+</body>
+</html>
